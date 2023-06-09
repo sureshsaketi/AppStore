@@ -293,11 +293,11 @@ const appsList = [
 ]
 
 class AppStore extends Component {
-  state = {activeTabId: tabsList[0].tabId, appsSearch: appsList}
+  state = {activeTabId: tabsList[0].tabId, searchInput: ''}
 
-  getFilteredAppsList = () => {
+  getFilteredAppsList = inputList => {
     const {activeTabId} = this.state
-    const filteredAppsList = appsList.filter(
+    const filteredAppsList = inputList.filter(
       eachApp => eachApp.category === activeTabId,
     )
     return filteredAppsList
@@ -307,17 +307,16 @@ class AppStore extends Component {
     this.setState({activeTabId: tabId})
   }
 
-  onSearchInput = event => {
-    const {appsSearch} = this.state
-    const filteringSearchApps = appsSearch.filter(eachApp =>
-      eachApp.appName.toLowerCase().includes(event.target.value.toLowerCase()),
-    )
-    this.setState({appsSearch: filteringSearchApps})
+  onChangeSearchInput = event => {
+    this.setState({searchInput: event.target.value})
   }
 
   render() {
-    const filteredApps = this.getFilteredAppsList()
-    const {activeTabId} = this.state
+    const {searchInput, activeTabId} = this.state
+    const inputList = appsList.filter(eachApp =>
+      eachApp.appName.toLowerCase().includes(searchInput.toLowerCase()),
+    )
+    const filteredApps = this.getFilteredAppsList(inputList)
     return (
       <>
         <div className="bg-container">
@@ -327,7 +326,7 @@ class AppStore extends Component {
               type="search"
               className="search-input"
               placeholder="Search"
-              onChange={this.onSearchInput}
+              onChange={this.onChangeSearchInput}
             />
             <img
               src="https://assets.ccbp.in/frontend/react-js/app-store/app-store-search-img.png"
